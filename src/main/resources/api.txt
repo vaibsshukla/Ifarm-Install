@@ -1,0 +1,12 @@
+get Ambari-Version
+http://ec2-18-188-39-103.us-east-2.compute.amazonaws.com:8080/api/v1/services/AMBARI/components/AMBARI_SERVER?fields=RootServiceComponents/component_version
+
+get HDP Service list
+http://ec2-18-188-39-103.us-east-2.compute.amazonaws.com:8080/api/v1/stacks/HDP/versions/2.6/services/
+
+get Service status
+http://ec2-18-188-39-103.us-east-2.compute.amazonaws.com:8080/api/v1/clusters/Sandbox/services/HDFS?fields=ServiceInfo
+
+
+
+

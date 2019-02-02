@@ -1,10 +1,14 @@
 package com.b3ds.ifarm.installation.configs;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -32,6 +36,18 @@ public class MVCContext  extends WebMvcConfigurerAdapter{
         return resolver;
     }
     
+/*    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(converter());
+        addDefaultHttpMessageConverters(converters);
+    }
+
+    @Bean
+    MappingJackson2HttpMessageConverter converter() {
+
+        MappingJackson2HttpMessageConverter converter 
+                    = new MappingJackson2HttpMessageConverter();
+        return converter;
+    }*/
 /*    @Override
     public void configureDefaultServletHandling(
             DefaultServletHandlerConfigurer configurer) {

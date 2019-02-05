@@ -12,30 +12,30 @@
         <title>Startmin - Bootstrap Admin Theme</title>
 
         <!-- Bootstrap Core CSS -->
-        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="/css/bootstrap.min.css" rel="stylesheet">
 
         <!-- MetisMenu CSS -->
-        <link href="../css/metisMenu.min.css" rel="stylesheet">
+        <link href="/css/metisMenu.min.css" rel="stylesheet">
 
         <!-- Timeline CSS -->
-        <link href="../css/timeline.css" rel="stylesheet">
+        <link href="/css/timeline.css" rel="stylesheet">
 
         <!-- Custom CSS -->
-        <link href="../css/startmin.css" rel="stylesheet">
+        <link href="/css/startmin.css" rel="stylesheet">
 
         <!-- Morris Charts CSS -->
-        <link href="../css/morris.css" rel="stylesheet">
+        <link href="/css/morris.css" rel="stylesheet">
 
         <!-- Custom style CSS -->
-        <link href="../css/Styles.css" rel="stylesheet">
-        <link href="../css/popup.css" rel="stylesheet">
+        <link href="/css/Styles.css" rel="stylesheet">
+        <link href="/css/popup.css" rel="stylesheet">
 
         <!-- Custom Fonts -->
-        <link href="../css/font-awesome.min.css" rel="stylesheet" type="text/css">
-        <link href="../css/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+        <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+        <link href="/css/dataTables/dataTables.bootstrap.css" rel="stylesheet">
 
         <!-- DataTables Responsive CSS -->
-        <link href="../css/dataTables/dataTables.responsive.css" rel="stylesheet">
+        <link href="/css/dataTables/dataTables.responsive.css" rel="stylesheet">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -372,11 +372,11 @@
      <!-- Modal content -->
 		  <div class="modal-content">
 		    <span class="close">&times;</span>
-			    <script type="text/javascript" src="../js/source-code-pro.js"></script>
-				<script type="text/javascript" src="../js/dat.gui.min.js"></script>
-				<script type="text/javascript" src="../js/stats-min.js"></script>
-				<script type="text/javascript" src="../js/three.min.js"></script>
-				<script type="text/javascript" src="../js/ami.un.js"></script>##
+			    <script type="text/javascript" src="/js/source-code-pro.js"></script>
+				<script type="text/javascript" src="/js/dat.gui.min.js"></script>
+				<script type="text/javascript" src="/js/stats-min.js"></script>
+				<script type="text/javascript" src="/js/three.min.js"></script>
+				<script type="text/javascript" src="/js/ami.un.js"></script>##
 	    	    <div id="my-gui-container"></div>
 			    <div id="dicom-container"></div>
 <!-- 				<script type="text/javascript" src="../js/dicomview.js"></script> -->
@@ -384,20 +384,20 @@
 		  </div>
 		</div>
         <!-- jQuery -->
-        <script src="../js/jquery.min.js"></script>
+        <script src="/js/jquery.min.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="../js/bootstrap.min.js"></script>
+        <script src="/js/bootstrap.min.js"></script>
 
         <!-- Metis Menu Plugin JavaScript -->
-        <script src="../js/metisMenu.min.js"></script>
+        <script src="/js/metisMenu.min.js"></script>
 
         <!-- Morris Charts JavaScript -->
-        <script src="../js/raphael.min.js"></script>
-        <script src="../js/startmin.js"></script>
-        <script src="../js/dataTables/jquery.dataTables.min.js"></script>
-        <script src="../js/dataTables/dataTables.bootstrap.min.js"></script>
-		<script type="text/javascript" src="../js/action.js"></script>
+        <script src="/js/raphael.min.js"></script>
+        <script src="/js/startmin.js"></script>
+        <script src="/js/dataTables/jquery.dataTables.min.js"></script>
+        <script src="/js/dataTables/dataTables.bootstrap.min.js"></script>
+		<script type="text/javascript" src="/js/action.js"></script>
 <!--         <script src="../js/dummy.js"></script> -->
 
     </body>

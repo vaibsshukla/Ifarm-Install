@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Implementation-Title: Ifarm-Install
+Implementation-Version: 0.1-Dev
+Built-By: Zero
+Implementation-Vendor-Id: com.b3ds.ifarm.installation
+Build-Jdk: 1.8.0_131
+Implementation-URL: http://b3-ds.com
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+Main-Class: com.b3ds.ifarm.installation.App
+

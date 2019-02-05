@@ -17,10 +17,12 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.b3ds.ifarm.installation.models.Credentials;
 import com.b3ds.ifarm.installation.models.Service;
 
 
 public class DBUtils {
+
 	public Connection connection = null;
 	private final static Logger logger = LogManager.getLogger(DBUtils.class);
 
@@ -50,7 +52,7 @@ public class DBUtils {
 				){
 			while(rs.next())
 			{
-				Service service = new Service(rs.getString(1), rs.getString(2), rs.getString(3));
+				Service service = new Service(rs.getString(1), rs.getString(2),"Unknown", "Unknown",rs.getString(3), "Unknown");
 				serviceList.add(service);
 			}
 		}catch(SQLException ex)
@@ -64,17 +66,19 @@ public class DBUtils {
 	
 	public int setCredentials(String type, String hostname, String port, String username, String password, String cluster) //This will set the credential details of ambari and other services like mysql, mongo
 	{
+		deleteRow("credentials", type);
 		getConnection();
-		final String sql = "insert into credentials (type, hostname, port_no, username, password)values(?,?,?,?,?,?)";
+		final String sql = "insert into credentials (type, hostname, port_no, username, password, cluster)"
+				+ "values(?,?,?,?,?,?)";
 		int status = 0;
 		try(Connection conn = this.connection;
-				PreparedStatement pstmt = conn.prepareStatement(sql)){
+			PreparedStatement pstmt = conn.prepareStatement(sql)){
 			pstmt.setString(1, type);
 			pstmt.setString(2, hostname);
 			pstmt.setString(3, port);
 			pstmt.setString(4, username);
 			pstmt.setString(5, password);
-			pstmt.setString(5, cluster);
+			pstmt.setString(6, cluster);
 			status = pstmt.executeUpdate();
 			return status;
 		}catch(SQLException ex){
@@ -85,7 +89,7 @@ public class DBUtils {
 		return status;
 	}
 	
-	public void getCredentials(String type) //This will set the credential details of ambari and other services like mysql, mongo
+	public Credentials getCredentials(String type) throws SQLException //This will set the credential details of ambari and other services like mysql, mongo
 	{
 		getConnection();
 		final String sql = "select * from credentials where type = ?";
@@ -95,16 +99,52 @@ public class DBUtils {
 			ResultSet rs = pstmt.executeQuery();
 			while(rs.next())
 			{
-				System.out.println(rs.getString(2));
+				Credentials credentials = new Credentials(rs.getString(2),
+						rs.getString(3), rs.getString(6), rs.getString(4), rs.getString(5));
+				return credentials;
+			}
+		}catch(SQLException ex){
+			logger.error("Internal error");
+			logger.error("Could not connect to database");
+			throw new SQLException();
+		}
+		return new Credentials(null, null, null, null, null);
+	}
+	
+	public void deleteRow(String tablename, String param)
+	{
+		getConnection();
+		final String sql = "delete from "+tablename+" where type = ?";
+		try(Connection conn = this.connection;
+				PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, param);
+			pstmt.execute();
+		}catch(SQLException ex){
+			logger.error("Internal error");
+			logger.error("Could not connect to database");
+		}
+	}
+	
+	public void getColumnNames(final String query)
+	{
+		getConnection();
+		try(Connection conn = this.connection;
+				Statement pstmt = conn.createStatement()){
+			ResultSet rs = pstmt.executeQuery(query);
+			int columncount = rs.getMetaData().getColumnCount();
+			logger.info("Total Column count = "+columncount);
+			for(int i = 1; i <= columncount; i++)
+			{
+				logger.info(rs.getMetaData().getColumnLabel(i));
 			}
 		}catch(SQLException ex){
 			ex.printStackTrace();
 			logger.error("Internal error");
 			logger.error("Could not connect to database");
 		}
+		
 	}
-
-	public void getAmbariServiceDetails()
+/*	public void getAmbariServiceDetails()
 	{
 		getConnection();
 		final String sql = "select * from Credentials";
@@ -125,7 +165,7 @@ public class DBUtils {
 			logger.error("Could not connectect to database");
 		}
 		
-	}
+	}*/
 	
 	public void showMetadata()
 	{

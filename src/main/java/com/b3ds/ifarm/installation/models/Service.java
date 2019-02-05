@@ -6,12 +6,20 @@ public class Service implements Serializable{
 	
 	private String type;
 	private String serviceName;
-	private String version;
-
-	public Service(String type, String serviceName, String version) {
+	private String runningStatus;
+	private String installedStatus;
+	private String requiredVersion;
+	private String installedVersion;
+	
+	public Service(String type, String serviceName, String runningStatus, String installedStatus,
+			String requiredVersion, String installedVersion) {
+		super();
 		this.type = type;
 		this.serviceName = serviceName;
-		this.version = version;
+		this.runningStatus = runningStatus;
+		this.installedStatus = installedStatus;
+		this.requiredVersion = requiredVersion;
+		this.installedVersion = installedVersion;
 	}
 
 	public String getType() {
@@ -30,17 +38,43 @@ public class Service implements Serializable{
 		this.serviceName = serviceName;
 	}
 
-	public String getVersion() {
-		return version;
+	public String getRunningStatus() {
+		return runningStatus;
 	}
 
-	public void setVersion(String version) {
-		this.version = version;
+	public void setRunningStatus(String runningStatus) {
+		this.runningStatus = runningStatus;
+	}
+
+	public String getInstalledStatus() {
+		return installedStatus;
+	}
+
+	public void setInstalledStatus(String installedStatus) {
+		this.installedStatus = installedStatus;
+	}
+
+	public String getRequiredVersion() {
+		return requiredVersion;
+	}
+
+	public void setRequiredVersion(String requiredVersion) {
+		this.requiredVersion = requiredVersion;
+	}
+
+	public String getInstalledVersion() {
+		return installedVersion;
+	}
+
+	public void setInstalledVersion(String installedVersion) {
+		this.installedVersion = installedVersion;
 	}
 
 	@Override
 	public String toString() {
-		return "Service [type=" + type + ", serviceName=" + serviceName + ", version=" + version + "]";
+		return "Service [type=" + type + ", serviceName=" + serviceName + ", runningStatus=" + runningStatus
+				+ ", installedStatus=" + installedStatus + ", requiredVersion=" + requiredVersion
+				+ ", installedVersion=" + installedVersion + "]";
 	}
 	
 	

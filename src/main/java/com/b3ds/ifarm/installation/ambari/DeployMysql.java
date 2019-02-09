@@ -1,4 +1,4 @@
-package com.b3ds.ifarm.installation.ambari;
+/*package com.b3ds.ifarm.installation.ambari;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.core.io.ClassPathResource;
@@ -37,9 +37,5 @@ public class DeployMysql {
 		databasepopulator.execute(dataSource(url,userName,password));
 	}
 	
-	public static void main(String[] args) {
-		DeployMysql deploy = new DeployMysql();
-		JdbcTemplate template = deploy.jdbcTemplate("192.168.1.16", "3306", "vivek", "2611798");
-		String sql = "select * from ";
-	}
 }
+*/

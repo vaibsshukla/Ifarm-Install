@@ -104,9 +104,36 @@ public class AmbariUtil {
 		}
 	}
 	
+	/*
+	 * Check connectivity with ambari
+	 */
+	public String checkAmbariConnectivity()
+	{
+		final String url = "http://"+AMBARI_HOSTNAME+":"+AMBARI_PORT+"/api/v1/services/AMBARI/components/AMBARI_SERVER";
+		RestTemplate template = new RestTemplate();
+		ResponseEntity<String> obj = null;
+		try{
+			obj = template.exchange(url, HttpMethod.GET, new HttpEntity<>(createHeaders(AMBARI_USER, AMBARI_PASSWORD)), String.class);
+		}
+		catch(ResourceAccessException ex)
+		{
+			if(ex.contains(UnknownHostException.class))
+			{
+				String message = "Unable to reach the ambari server. This error is due to invalid hostname or port or your ambari server is down. "
+						+ "Please check once again for hostname and confirm that you ambari is running.";
+				logger.error(ex.getMessage());
+				return message;
+			}
+			logger.error(ex.getMessage());
+			return "Could not access amabari server.";
+		}
+		return "Unable to reach the ambari server. This error is due to invalid hostname or port or your ambari server is down. "
+						+ "Please check once again for hostname and confirm that you ambari is running.";
+		
+	}
+	
 	public String getSingleHDPServiceStatus(final String servicename, Service service)
 	{
-//		final String url = "http://"+AMBARI_HOSTNAME+":"+AMBARI_PORT+AMBARI_API_ENDPOINT+AMBARI_CLUSTER+"/services/"+servicename+"?fields=ServiceInfo";
 		final String url = "http://"+AMBARI_HOSTNAME+":"+AMBARI_PORT+AMBARI_API_ENDPOINT+AMBARI_CLUSTER+"/services/"+servicename;
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<String> obj = null;
@@ -126,7 +153,7 @@ public class AmbariUtil {
 		
 		catch(HttpClientErrorException ex)
 		{
-			Service serviced = new Service("Ambari", servicename, "Unknown", "Unknown", "Unknown", "Unknwon");
+			Service serviced = new Service("Ambari", servicename, "Unknown", "Unknown", "Unknown", "Unknown");
 			Gson gson = new Gson();
 			return gson.toJson(serviced);
 		}

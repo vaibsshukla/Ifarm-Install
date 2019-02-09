@@ -11,6 +11,7 @@ import org.springframework.core.Ordered;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -24,7 +25,13 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 public class MVCContext extends WebMvcConfigurerAdapter{
 	private final static Logger logger = LogManager.getLogger(MVCContext.class);
 		
-    @Bean
+	
+    @Override
+	public void addCorsMappings(CorsRegistry registry) {
+    	registry.addMapping("/**").allowedOrigins("*");
+	}
+
+	@Bean
     public InternalResourceViewResolver getInternalResourceViewResolver() {
         InternalResourceViewResolver resolver = new InternalResourceViewResolver();
         resolver.setPrefix("/WEB-INF/View/");

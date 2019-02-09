@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.b3ds.ifarm.installation.models.Credentials;
+import com.b3ds.ifarm.installation.models.IfarmConfig;
 import com.b3ds.ifarm.installation.models.Service;
 
 
@@ -38,8 +39,7 @@ public class DBUtils {
 			logger.error("could not connect to database");
 		}
 	}
-	
-	
+		
 	public List<Service> getAllServices() //Get list of required services from sqlite database
 	{
 		getConnection();
@@ -64,6 +64,149 @@ public class DBUtils {
 		return serviceList;
 	}
 	
+	public List<String> getDBsDetails(String type)
+	{
+		getConnection();
+		final String sql = "select * from dbTables where dbtype = ?";
+		List<String> dbLists = new ArrayList<>();
+		
+		try(Connection conn = this.connection;
+				PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, type);
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next())
+			{
+				dbLists.add(rs.getString(2));
+			}
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+			logger.error("Could not connectect to database");
+		}
+		
+		return dbLists;
+	}
+	
+	public void setIfarmConfigTable()
+	{
+		getConnection();
+		final String sql = "create table if not exists configs("+
+				"hdfsNameNode varchar(100), hadoopConfigLoc varchar(100),	mysqlHost varchar(100),	mysqlPort varchar(100),	mysqlUsername varchar(100),	mysqlPassword varchar(100),	solrHost varchar(100),	solrPort varchar(100),	solrUsername varchar(100),	solrPassword varchar(100),	mongoHostName varchar(100),	mongoPort varchar(100),	mongoUsername varchar(100),	mongoPassword varchar(100), livyHost varchar(100),	livyPort varchar(100),	livyUsername varchar(100),	livyPassword varchar(100),	kafkaBrokerHost varchar(100),	kafkaBrokerPort varchar(100),	ifarmDataHost varchar(100),	ifarmDataPort varchar(100),	ifarmPacksHost varchar(100), ifarmPacksPort varchar(100))";
+		try(Connection conn = this.connection;
+				Statement pstmt = conn.createStatement()){
+				pstmt.execute(sql);
+				
+			}catch(SQLException ex){
+				ex.printStackTrace();
+				logger.error("Internal error");
+				logger.error("Could not connect to database");
+			}
+	}
+	
+	public IfarmConfig getIfarmConfig() throws SQLException
+	{
+		getConnection();
+		final String sql = "select * from configs";
+		try(Connection conn = this.connection;
+				PreparedStatement pstmt = conn.prepareStatement(sql)){
+			ResultSet rs = pstmt.executeQuery();
+			while(rs.next())
+			{
+				IfarmConfig config = new IfarmConfig();
+				config.setHdfsNameNode(rs.getString(1));
+				config.setHadoopConfigLoc(rs.getString(2));
+				config.setMysqlHost(rs.getString(3));
+				config.setMysqlPort(rs.getString(4));
+				config.setMysqlUsername(rs.getString(5));
+				config.setMysqlPassword(rs.getString(6));
+				config.setSolrHost(rs.getString(7));
+				config.setSolrPort(rs.getString(8));
+				config.setSolrUsername(rs.getString(9));
+				config.setSolrPassword(rs.getString(10));
+				config.setMongoHostName(rs.getString(11));
+				config.setMongoPort(rs.getString(12));
+				config.setMongoUsername(rs.getString(13));
+				config.setMongoPassword(rs.getString(14));
+				config.setLivyHost(rs.getString(15));
+				config.setLivyPort(rs.getString(16));
+				config.setLivyUsername(rs.getString(17));
+				config.setLivyPassword(rs.getString(18));
+				config.setKafkaBrokerHost(rs.getString(19));
+				config.setKafkaBrokerPort(rs.getString(20));
+				config.setIfarmDataHost(rs.getString(21));
+				config.setIfarmDataPort(rs.getString(22));
+				config.setIfarmPacksHost(rs.getString(23));
+				config.setIfarmPacksPort(rs.getString(24));
+				return config;
+			}
+		}catch(SQLException ex){
+			ex.printStackTrace();
+			logger.error("Internal error");
+			logger.error("Could not connect to database");
+		}
+		return new IfarmConfig();
+		
+	}
+	
+	public void emptyTable(String tablename)
+	{
+		getConnection();
+		final String sql = "Drop table if exists "+tablename+"";
+		try(Connection conn = this.connection;
+				PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.execute();
+		}catch(SQLException ex){
+			ex.printStackTrace();
+			logger.error("Internal error");
+			logger.error("Could not connect to database");
+		}
+	}
+
+
+	public int setIfarmConfig(IfarmConfig config) //This will set the credential details of ambari and other services like mysql, mongo
+	{
+		emptyTable("configs");
+		setIfarmConfigTable();
+		getConnection();
+		final String sql = "insert into configs(hdfsNameNode, hadoopConfigLoc, mysqlHost ,mysqlPort ,	mysqlUsername ,	mysqlPassword ,	solrHost ,	solrPort ,	solrUsername ,	solrPassword ,	mongoHostName ,	mongoPort ,	mongoUsername ,	mongoPassword , livyHost ,	livyPort ,	livyUsername ,	livyPassword ,	kafkaBrokerHost ,	kafkaBrokerPort ,	ifarmDataHost ,	ifarmDataPort ,	ifarmPacksHost , ifarmPacksPort )"
+				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		int status = 0;
+		try(Connection conn = this.connection;
+			PreparedStatement pstmt = conn.prepareStatement(sql)){
+			pstmt.setString(1, config.getHdfsNameNode());
+			pstmt.setString(2, config.getHadoopConfigLoc());
+			pstmt.setString(3, config.getMysqlHost());
+			pstmt.setString(4, config.getMysqlPort());
+			pstmt.setString(5, config.getMysqlUsername());
+			pstmt.setString(6, config.getMysqlPassword());
+			pstmt.setString(7, config.getSolrHost());
+			pstmt.setString(8, config.getSolrPort());
+			pstmt.setString(9, config.getSolrUsername());
+			pstmt.setString(10, config.getSolrPassword());
+			pstmt.setString(11, config.getMongoHostName());
+			pstmt.setString(12, config.getMongoPort());
+			pstmt.setString(13, config.getMongoUsername());
+			pstmt.setString(14, config.getMongoPassword());
+			pstmt.setString(15, config.getLivyHost());
+			pstmt.setString(16, config.getLivyPort());
+			pstmt.setString(17, config.getLivyUsername());
+			pstmt.setString(18, config.getLivyPassword());
+			pstmt.setString(19, config.getKafkaBrokerHost());
+			pstmt.setString(20, config.getKafkaBrokerPort());
+			pstmt.setString(21, config.getIfarmDataHost());
+			pstmt.setString(22, config.getIfarmDataPort());
+			pstmt.setString(23, config.getIfarmPacksHost());
+			pstmt.setString(24, config.getIfarmPacksPort());
+			status = pstmt.executeUpdate();
+			return status;
+		}catch(SQLException ex){
+			ex.printStackTrace();
+			logger.error("Internal error");
+			logger.error("Could not connect to database");
+		}
+		return status;
+	}
+
 	public int setCredentials(String type, String hostname, String port, String username, String password, String cluster) //This will set the credential details of ambari and other services like mysql, mongo
 	{
 		deleteRow("credentials", type);

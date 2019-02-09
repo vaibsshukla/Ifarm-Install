@@ -34,10 +34,11 @@ public class AmbariUtilTest {
 	{
 		AmbariUtil util = new AmbariUtil();
 		Response res = util.checkAllRequiredHDPServices();
-		Gson gson = new Gson();
-		
-		System.out.println(gson.toJson(res));
+		System.out.println(res);
+//		Gson gson = new Gson();		
+//		System.out.println(gson.toJson(res));
 	}
+	
 //	@Test
 	public void validateHost()
 	{

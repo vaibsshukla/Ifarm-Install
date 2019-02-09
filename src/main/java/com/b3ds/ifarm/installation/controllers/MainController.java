@@ -1,5 +1,7 @@
 package com.b3ds.ifarm.installation.controllers;
 
+import java.sql.SQLException;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -7,9 +9,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.view.RedirectView;
@@ -17,12 +21,12 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.b3ds.ifarm.installation.ambari.AmbariUtil;
 import com.b3ds.ifarm.installation.ambari.Validation;
 import com.b3ds.ifarm.installation.configs.db.DBUtils;
+import com.b3ds.ifarm.installation.models.IfarmConfig;
 import com.b3ds.ifarm.installation.models.Response;
 import com.b3ds.ifarm.installation.models.ValidationResponse;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-
-import ch.qos.logback.core.db.dialect.DBUtil;
 
 @Controller
 public class MainController {
@@ -35,15 +39,6 @@ public class MainController {
 	@RequestMapping("/")
 	public String index(Model model)
 	{
-		try{
-			if (rv.isRedirectView())
-			{
-				return "index2";
-			}
-		}catch(NullPointerException npe)
-		{
-			
-		}
 		Gson gson = new Gson();
 		JsonObject obj = gson.fromJson(gson.toJson(UTIL.getAllRequiredServices()), JsonObject.class);
 		model.addAttribute("ServiceList", obj);
@@ -114,15 +109,109 @@ public class MainController {
 		return gson.toJson(res);
 	}
 	
+	@PostMapping("/dbMysql")
+	@ResponseBody
+	public String getMysqlDetails(HttpServletRequest req, Model model, HttpServletResponse resp)
+	{
+		String hostname = null;
+		Integer port = null;
+		String username = null;
+		String password = null;
+		String cluster = null;
+		
+		Response response = null;
+		
+		Gson gson = new Gson();
+		if(req.getParameter("mysqlhost") !=null && req.getParameter("mysqlhost") != null
+				&& req.getParameter("mysqlusername") != null
+				&& req.getParameter("mysqlpassword") != null)
+		{
+			if(Validation.checkHostname(req.getParameter("mysqlhost")))
+			{
+				hostname = req.getParameter("mysqlhost");
+			}
+			else
+			{
+				model.addAttribute("message", new ValidationResponse("Mysql Hostname", "Invalid Mysql Host name"));
+				response = new Response();
+				response.setData(null);
+				response.setStatus(500);
+				response.setMessage("Mysql Hostname : Invalid Mysql Host name");
+				return "index_mysql";
+			}
+			if(Validation.validatePort(Integer.parseInt(req.getParameter("mysqlport"))))
+			{
+				port = Integer.parseInt(req.getParameter("mysqlport"));			
+			}
+			else
+			{
+				model.addAttribute("message", new ValidationResponse("Mysql Port", "Invalid Mysql Port"));
+				return "index";
+			}
+			username = req.getParameter("mysqlusername");
+			password = req.getParameter("mysqlpassword");
+			dbUtil.setCredentials("Ambari", hostname, port.toString(), username, password, cluster);
+			return "redirect:/temp";
+			
+		}else
+		{
+			model.addAttribute("message", new ValidationResponse("Value null", "There is null value in one of the field"));
+			return "index_mysql";
+		}
+		
+	}
+	
+	@GetMapping("/getConfigs")
+	@ResponseBody
+	public String getConfigs()
+	{
+		Gson gson = new Gson();
+		IfarmConfig config = null;
+		try {
+			config = dbUtil.getIfarmConfig();
+			return gson.toJson(new Response(200, config, "Success"));
+		} catch (SQLException e) {
+			return gson.toJson(new Response(500, new IfarmConfig(), "Configuration Not set."));
+		}
+	}
+	
+	@PostMapping("/saveConfigs")
+	@ResponseBody
+	public String saveConfigs(@RequestBody Object obj)
+	{
+		Gson gson = new Gson();
+		IfarmConfig obj2 = gson.fromJson(gson.toJson(obj), IfarmConfig.class);
+		System.out.println(obj2);
+		int i = dbUtil.setIfarmConfig(obj2);
+		if(i == 1)
+		{
+			Response response = new Response(200, obj2, "Configuration updated Successfully.");
+			return gson.toJson(response);
+		}
+		else
+		{
+			Response response = new Response(500, new IfarmConfig(), "Internal error: Check your sqlite db is present.");
+			return gson.toJson(response);
+		}
+	}
+	
+	@PostMapping("/deploymysqldb")
+	@ResponseBody
+	public String deployMysqlDB()
+	{
+		return null;
+	}
+	
 	@RequestMapping("/checkAllServices")
 	@PostMapping
 	@ResponseBody
 	public String checkAllService()
 	{
 		AmbariUtil util = new AmbariUtil();
-		Response res = util.checkAllRequiredHDPServices();
+		Response res = util.checkAllRequiredHDPServices();		
 		Gson gson = new Gson();
 		return gson.toJson(res);
 	}
-}
 
+	
+}

@@ -15,7 +15,7 @@ import com.b3ds.ifarm.installation.models.Credentials;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DBTest {
 	
-	@Test
+//	@Test
 	public void testInsertAmbari()
 	{
 		DBUtils util = new DBUtils();
@@ -48,10 +48,10 @@ public class DBTest {
 		con.close();
 	}
 	
-	//@Test
+	@Test
 	public void uestgetCredentials() throws SQLException
 	{
-		String type = "Mysql";
+		String type = "Ambari";
 		DBUtils util = new DBUtils();
 		Credentials cred = util.getCredentials(type);
 		System.out.println(cred);

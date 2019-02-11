@@ -4,6 +4,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -82,9 +83,17 @@ public class AmbariUtil {
 			AMBARI_PASSWORD = credentials.getPassword();
 			AMBARI_USER = credentials.getUserName();
 			AMBARI_PORT = Integer.parseInt(credentials.getPort());
+			Gson gson = new Gson();
+
+			Map<Integer, String> map = checkAmbariConnectivity();
+			
+			if(map.containsKey(0))
+			{
+				Response response = new Response(500, null, map.get(0));
+				return response;
+			}
 			List<Service> services =  utils.getAllServices();
 			List<Service> newService = new ArrayList<>();
-			Gson gson = new Gson();
 			for(Service service : services)
 			{
 				String ser = getSingleHDPServiceStatus(service.getServiceName().toUpperCase(), service);
@@ -107,11 +116,12 @@ public class AmbariUtil {
 	/*
 	 * Check connectivity with ambari
 	 */
-	public String checkAmbariConnectivity()
+	public HashMap<Integer, String> checkAmbariConnectivity()
 	{
 		final String url = "http://"+AMBARI_HOSTNAME+":"+AMBARI_PORT+"/api/v1/services/AMBARI/components/AMBARI_SERVER";
 		RestTemplate template = new RestTemplate();
 		ResponseEntity<String> obj = null;
+		HashMap<Integer, String> result = new HashMap<>();
 		try{
 			obj = template.exchange(url, HttpMethod.GET, new HttpEntity<>(createHeaders(AMBARI_USER, AMBARI_PASSWORD)), String.class);
 		}
@@ -122,14 +132,17 @@ public class AmbariUtil {
 				String message = "Unable to reach the ambari server. This error is due to invalid hostname or port or your ambari server is down. "
 						+ "Please check once again for hostname and confirm that you ambari is running.";
 				logger.error(ex.getMessage());
-				return message;
+				result.put(0, message);
+				return result;
 			}
+			String message = "Unable to reach the ambari server. This error is due to invalid hostname or port or your ambari server is down. "
+					+ "Please check once again for hostname and confirm that you ambari is running.";
 			logger.error(ex.getMessage());
-			return "Could not access amabari server.";
+			result.put(0, message);
+			return result;
 		}
-		return "Unable to reach the ambari server. This error is due to invalid hostname or port or your ambari server is down. "
-						+ "Please check once again for hostname and confirm that you ambari is running.";
-		
+		result.put(1, "Success");
+		return result;		
 	}
 	
 	public String getSingleHDPServiceStatus(final String servicename, Service service)

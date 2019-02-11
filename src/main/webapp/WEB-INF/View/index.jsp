@@ -11,12 +11,16 @@
 
         <title>IFarm Ditributed Healthcare</title>
 
+        <!-- Bootstrap Core CSS -->
         <link href="/css/bootstrap.min.css" rel="stylesheet">
 
+        <!-- MetisMenu CSS -->
         <link href="/css/metisMenu.min.css" rel="stylesheet">
 
+        <!-- Custom CSS -->
         <link href="/css/startmin.css" rel="stylesheet">
 
+        <!-- Custom Fonts -->
         <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -108,12 +112,8 @@
                         </ul>
                     </li>
                 </ul>
-                <!-- /.navbar-top-links -->
-                
-                 
-           
+                <!-- /.navbar-top-links -->           
             </nav>
-
             <!-- Page Content -->
             <div id="page-wrapper">
                 <div class="container-fluid">
@@ -139,8 +139,7 @@
                             
                         </div>
                         <!-- /.col-lg-12 -->
-                        
-                        
+                              
                         <div class="loader" style="display: none;"></div>
                         
                         <!-- Modal -->
@@ -214,93 +213,24 @@
         </div>
         <!-- /#wrapper -->
 
-        <script src="/js/jquery.min.js"></script>        
-        <script src="/js/bootstrap.min.js"></script>        
+        <!-- jQuery -->
+        <script src="/js/jquery.min.js"></script>
+        
+         <!-- Bootstrap Core JavaScript -->
+        <script src="/js/bootstrap.min.js"></script>
+        
+           <!-- Metis Menu Plugin JavaScript -->
         <script src="/js/metisMenu.min.js"></script>
+
+        <!-- Custom Theme JavaScript -->
         <script src="/js/startmin.js"></script>
  
         <script src="/js/code.js"></script>
         <script src="/js/errormsg.js"></script>
-        
+        <script type="text/javascript" src="/js/action.js"></script>
         <script>
             
-        var jsondata = ${ServiceList};
-/*  var jsondata= {
-                "status": 200,
-                "data": [{
-                    "type": "HDP",
-                    "serviceName": "HDFS",
-                    "runningStatus": "Started",
-                    "installedStatus": "Installed",
-                    "requiredVersion": "2.6.0",
-                    "installedVersion": "2.7.1"
-                }, {
-                    "type": "HDP",
-                    "serviceName": "NIFI",
-                    "runningStatus": "Stopped",
-                    "installedStatus": "Installed",
-                    "requiredVersion": "1.5.0",
-                    "installedVersion": "1.7.0"
-                }, {
-                    "type": "HDP",
-                    "serviceName": "Zookeeper",
-                    "runningStatus": "Started",
-                    "installedStatus": "Installed",
-                    "requiredVersion": "1.4.0",
-                    "installedVersion": "1.2.0"
-                }, {
-                    "type": "HDP",
-                    "serviceName": "Kafka",
-                    "runningStatus": "Stopped",
-                    "installedStatus": "Installed",
-                    "requiredVersion": "1.0.0",
-                    "installedVersion": "1.0.0"
-                }, {
-                    "type": "HDP",
-                    "serviceName": "Spark2",
-                    "runningStatus": "Running",
-                    "installedStatus": "Installed",
-                    "requiredVersion": "2.3.0",
-                    "installedVersion": "2.1.1"
-                }, {
-                    "type": "HDP",
-                    "serviceName": "solr",
-                    "runningStatus": "Unknown",
-                    "installedStatus": "Unknown",
-                    "requiredVersion": "5.5",
-                    "installedVersion": "Unknown"
-                }, {
-                    "type": "NON-HDP",
-                    "serviceName": "Mysql",
-                    "runningStatus": "Unknown",
-                    "installedStatus": "Unknown",
-                    "requiredVersion": "8.0",
-                    "installedVersion": "Unknown"
-                }, {
-                    "type": "NON-HDP",
-                    "serviceName": "Mongo",
-                    "runningStatus": "Unknown",
-                    "installedStatus": "Unknown",
-                    "requiredVersion": "3.5",
-                    "installedVersion": "Unknown"
-                }, {
-                    "type": "NON-HDP",
-                    "serviceName": "Neo4J",
-                    "runningStatus": "Unknown",
-                    "installedStatus": "Unknown",
-                    "requiredVersion": "3.5",
-                    "installedVersion": "Unknown"
-                }, {
-                    "type": "NON-HDP",
-                    "serviceName": "PackServer",
-                    "runningStatus": "Unknown",
-                    "installedStatus": "Unknown",
-                    "requiredVersion": "1.0",
-                    "installedVersion": "Unknown"
-                }],
-                "message": "Success"
-            } */
-            
+            var jsondata = ${ServiceList};
             getData(jsondata);
 
                $(document).ready(function(){
@@ -313,22 +243,29 @@
                         url: "http://localhost:8080/checkAllServices",
                         dataType : "json",
                         success: function(result){
-                        	getData(result);
+                        	console.log(result)
+                            if(result.status == 500){
+                                alert(result.message)
+                                $("#modalBody").load("/pages/AmbariDetail.html");
+                                $("#myModal2").modal();                                
+                                return;
+                            }
+                            getData(result);
+                            
                         },
                         statusCode : {
-                            500: function(){
-                            errorsforstatuscode(result);   
+                            500: function(result){
                            }
                         }
                         });
                         
                         setTimeout(function(){
-                        $(".loader").hide();
+                        	$(".loader").hide();
                         },8000);
                     });
                    
                     $("#cred").click(function(){
-                    $("#modalBody").load("modalform.html");
+                    $("#modalBody").load("/pages/AmbariDetail.html");
                     $("#myModal2").modal();
                     });
             });

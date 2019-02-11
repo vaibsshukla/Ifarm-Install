@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import com.b3ds.ifarm.installation.ambari.AmbariUtil;
 import com.b3ds.ifarm.installation.ambari.Validation;
 import com.b3ds.ifarm.installation.configs.db.DBUtils;
+import com.b3ds.ifarm.installation.models.Credentials;
 import com.b3ds.ifarm.installation.models.IfarmConfig;
 import com.b3ds.ifarm.installation.models.Response;
 import com.b3ds.ifarm.installation.models.ValidationResponse;
@@ -213,5 +215,20 @@ public class MainController {
 		return gson.toJson(res);
 	}
 
-	
+	@PostMapping("/saveAmbariDetail")
+	@ResponseBody
+	public String saveAmbariDetail(@RequestBody Object obj)
+	{
+		Gson gson = new Gson();
+		Credentials cred = gson.fromJson(gson.toJson(obj), Credentials.class);
+		logger.info(cred);
+		int i = dbUtil.setCredentials("Ambari", cred.getHostname(), cred.getPort(), cred.getUserName(), cred.getPassword(), cred.getClusterName());
+		if(i == 1)
+		{
+			Response res = new Response(200, null, "Success");
+			return gson.toJson(res);
+		}
+		Response res = new Response(500, null, "Failed");
+		return gson.toJson(res);
+	}
 }

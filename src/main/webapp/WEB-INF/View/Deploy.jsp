@@ -11,7 +11,7 @@
 
         <title>IFarm Ditributed Healthcare</title>
         <link href="/css/bootstrap.min.css" rel="stylesheet">
-        <link href="css/metisMenu.min.css" rel="stylesheet">
+        <link href="/css/metisMenu.min.css" rel="stylesheet">
         <link href="/css/startmin.css" rel="stylesheet">
         <link href="/css/font-awesome.min.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="/css/normalize.css">
@@ -336,5 +336,5 @@ input.error {
     
 </script>  
 
-    </body>
+</body>
 </html>

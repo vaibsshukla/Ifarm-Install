@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.Test;
 
 import com.b3ds.ifarm.installation.configs.db.DBUtils;
+import com.b3ds.ifarm.installation.models.IfarmConfig;
 
 public class NifiSqlite {
 	
@@ -47,7 +48,6 @@ public class NifiSqlite {
 		}
 	}
 	
-	@Test
 	public void checkdb() throws SQLException
 	{
 		DBUtils utils = new DBUtils();
@@ -64,4 +64,76 @@ public class NifiSqlite {
 		}
 		
 	}
+	
+	public void createNifiVariableTable() throws SQLException
+	{
+		DBUtils utils = new DBUtils();
+		utils.getConnection();
+		Connection conn = utils.connection;
+		
+		final String sql1 = "Drop table NifiVariableList";
+		final String sql = "create table if not exists NifiVariableList(VariableName varchar(20), VariableValue varchar(100))";
+		Statement stm = conn.createStatement();
+		stm.execute(sql1);
+		stm.execute(sql);
+	}
+	
+//	@Test
+	public void insertNifiVariableTable() throws SQLException
+	{
+		createNifiVariableTable();
+		DBUtils utils = new DBUtils();
+		IfarmConfig confi = utils.getIfarmConfig();
+		String mongo = "mongodb://"+confi.getMongoHostName()+":"+confi.getMongoPort();
+		String ifarmmysql = "jdbc:mysql://"+confi.getMysqlHost()+":"+confi.getMysqlPort();
+		String mysqluser = confi.getMysqlUsername();
+		String mysqlpass = confi.getMysqlPassword();
+		String solr = confi.getSolrHost()+":"+confi.getSolrPort();
+		String kafka = confi.getKafkaBrokerHost()+":"+confi.getKafkaBrokerPort();
+		
+		String livy = confi.getLivyHost()+":"+confi.getSolrPort()+"/batches";
+		utils.getConnection();
+		Connection conn = utils.connection;
+		List<String> list = new ArrayList<String>();
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MONGO','"+mongo+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_HOST','"+ifarmmysql+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_USER','"+mysqluser+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_PASS','"+mysqlpass+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_DRIVER_LOC','"+confi.getMysqlDriverLocation()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('HADOOP_CONFIG_LOC','"+confi.getHadoopConfigLoc()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_LOC','"+solr+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_USER','"+confi.getSolrUsername()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_PASS','"+confi.getSolrPassword()+"')");
+/*		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SPARK_STAGE_1')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SPARK_STAGE_2')");*/
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('LIVY_URL','"+livy+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('KAFKA_BROKER','"+kafka+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('MYSQL_HOST','"+confi.getMysqlHost()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('MYSQL_PORT','"+confi.getMysqlPort()+"')");
+		Statement stm = conn.createStatement();
+		
+		for(String sql : list)
+		{
+			stm.execute(sql);
+		}
+	}
+	
+	@Test
+	public void checkNifiVariableList() throws SQLException
+	{
+		DBUtils utils = new DBUtils();
+		utils.getConnection();
+		Connection conn = utils.connection;
+		
+		final String sql = "select * from NifiVariableList";
+		Statement stm =  conn.createStatement();
+		ResultSet rs = stm.executeQuery(sql);
+		
+		while(rs.next())
+		{
+			System.out.println(rs.getString(1)+"  :  "+rs.getString(2));
+		}
+		
+	}
+
 }

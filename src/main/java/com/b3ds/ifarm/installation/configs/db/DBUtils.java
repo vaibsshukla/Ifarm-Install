@@ -12,7 +12,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,7 +93,18 @@ public class DBUtils {
 	{
 		getConnection();
 		final String sql = "create table if not exists configs("+
-				"hdfsNameNode varchar(100), hadoopConfigLoc varchar(100),	mysqlHost varchar(100),	mysqlPort varchar(100),	mysqlUsername varchar(100),	mysqlPassword varchar(100),	solrHost varchar(100),	solrPort varchar(100),	solrUsername varchar(100),	solrPassword varchar(100),	mongoHostName varchar(100),	mongoPort varchar(100),	mongoUsername varchar(100),	mongoPassword varchar(100), livyHost varchar(100),	livyPort varchar(100),	livyUsername varchar(100),	livyPassword varchar(100),	kafkaBrokerHost varchar(100),	kafkaBrokerPort varchar(100),	ifarmDataHost varchar(100),	ifarmDataPort varchar(100),	ifarmPacksHost varchar(100), ifarmPacksPort varchar(100))";
+				"hdfsNameNode varchar(100), hadoopConfigLoc varchar(100),"
+				+ "mysqlHost varchar(100),	mysqlPort varchar(100),	mysqlUsername varchar(100),	"
+				+ "mysqlPassword varchar(100),	solrHost varchar(100),	solrPort varchar(100),	"
+				+ "solrUsername varchar(100),	solrPassword varchar(100),	mongoHostName varchar(100),	"
+				+ "mongoPort varchar(100),	mongoUsername varchar(100),	mongoPassword varchar(100), "
+				+ "livyHost varchar(100),	livyPort varchar(100),	livyUsername varchar(100),	"
+				+ "livyPassword varchar(100),"
+				+ "kafkaBrokerHost varchar(100),kafkaBrokerPort varchar(100),ifarmDataHost varchar(100),"
+				+ "ifarmDataPort varchar(100),	"
+				+ "ifarmPacksHost varchar(100), ifarmPacksPort varchar(100), mysqlDriverLocation varchar(100),"
+				+ "nifiHost varchar(100), nifiPort varchar(100), nifiUsername varchar(100),"
+				+ "nifiPassword varchar(100))";
 		try(Connection conn = this.connection;
 				Statement pstmt = conn.createStatement()){
 				pstmt.execute(sql);
@@ -137,6 +150,12 @@ public class DBUtils {
 				config.setIfarmDataPort(rs.getString(22));
 				config.setIfarmPacksHost(rs.getString(23));
 				config.setIfarmPacksPort(rs.getString(24));
+				
+				config.setMysqlDriverLocation(rs.getString(25));
+				config.setNifiHost(rs.getString(26));
+				config.setNifiPort(rs.getString(27));
+				config.setNifiUsername(rs.getString(28));
+				config.setNifiPassword(rs.getString(29));
 				return config;
 			}
 		}catch(SQLException ex){
@@ -168,8 +187,8 @@ public class DBUtils {
 		emptyTable("configs");
 		setIfarmConfigTable();
 		getConnection();
-		final String sql = "insert into configs(hdfsNameNode, hadoopConfigLoc, mysqlHost ,mysqlPort ,	mysqlUsername ,	mysqlPassword ,	solrHost ,	solrPort ,	solrUsername ,	solrPassword ,	mongoHostName ,	mongoPort ,	mongoUsername ,	mongoPassword , livyHost ,	livyPort ,	livyUsername ,	livyPassword ,	kafkaBrokerHost ,	kafkaBrokerPort ,	ifarmDataHost ,	ifarmDataPort ,	ifarmPacksHost , ifarmPacksPort )"
-				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		final String sql = "insert into configs(hdfsNameNode, hadoopConfigLoc, mysqlHost ,mysqlPort ,	mysqlUsername ,	mysqlPassword ,	solrHost ,	solrPort ,	solrUsername ,	solrPassword ,	mongoHostName ,	mongoPort ,	mongoUsername ,	mongoPassword , livyHost ,	livyPort ,	livyUsername ,	livyPassword ,	kafkaBrokerHost ,	kafkaBrokerPort ,	ifarmDataHost ,	ifarmDataPort ,	ifarmPacksHost , ifarmPacksPort,  mysqlDriverLocation, nifiHost, nifiPort, nifiUsername, nifiPassword)"
+				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		int status = 0;
 		try(Connection conn = this.connection;
 			PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -197,6 +216,12 @@ public class DBUtils {
 			pstmt.setString(22, config.getIfarmDataPort());
 			pstmt.setString(23, config.getIfarmPacksHost());
 			pstmt.setString(24, config.getIfarmPacksPort());
+
+			pstmt.setString(25, config.getMysqlDriverLocation());
+			pstmt.setString(26, config.getNifiHost());
+			pstmt.setString(27, config.getNifiPort());
+			pstmt.setString(28, config.getNifiUsername());
+			pstmt.setString(29, config.getNifiPassword());
 			status = pstmt.executeUpdate();
 			return status;
 		}catch(SQLException ex){
@@ -310,6 +335,7 @@ public class DBUtils {
 		
 	}*/
 	
+	
 	public void showMetadata()
 	{
 		final String sql = "select * from Credentials";
@@ -327,6 +353,99 @@ public class DBUtils {
 		
 		
 	}
+	
+	
+	/*
+	 * Set the list of registry variables used in ifarm 
+	 */
+	public void createNifiVariableTable() throws SQLException
+	{
+		getConnection();
+		final String sql1 = "Drop table NifiVariableList";
+		final String sql = "create table if not exists NifiVariableList(VariableName varchar(20), VariableValue varchar(100))";
+		
+		try(Connection conn = this.connection;
+				Statement stmt = conn.createStatement();
+				){
+			stmt.addBatch(sql1);
+			stmt.addBatch(sql);
+			stmt.executeBatch();
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+			logger.error("Could not connectect to database");
+		}
+	}
+
+	public void insertNifiVariableTable() throws SQLException
+	{
+		createNifiVariableTable();
+
+		IfarmConfig confi = getIfarmConfig();
+		
+		String mongo = "mongodb://"+confi.getMongoHostName()+":"+confi.getMongoPort();
+		String ifarmmysql = "jdbc:mysql://"+confi.getMysqlHost()+":"+confi.getMysqlPort();
+		String mysqluser = confi.getMysqlUsername()+"klp";
+		String mysqlpass = confi.getMysqlPassword();
+		String solr = confi.getSolrHost()+":"+confi.getSolrPort();
+		String kafka = confi.getKafkaBrokerHost()+":"+confi.getKafkaBrokerPort();
+		
+		String livy = confi.getLivyHost()+":"+confi.getSolrPort()+"/batches";
+		List<String> list = new ArrayList<String>();
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MONGO','"+mongo+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_HOST','"+ifarmmysql+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_USER','"+mysqluser+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_PASS','"+mysqlpass+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('IFARM_MYSQL_DRIVER_LOC','"+confi.getMysqlDriverLocation()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('HADOOP_CONFIG_LOC','"+confi.getHadoopConfigLoc()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_LOC','"+solr+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_USER','"+confi.getSolrUsername()+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SOLR_PASS','"+confi.getSolrPassword()+"')");
+/*		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SPARK_STAGE_1')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('SPARK_STAGE_2')");*/
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('LIVY_URL','"+livy+"')");
+		list.add("insert into NifiVariableList(VariableName, VariableValue) values ('KAFKA_BROKER','"+kafka+"')");
+		
+		getConnection();
+
+		try(Connection conn = this.connection;
+				Statement stmt = conn.createStatement();
+				){
+			for(String sql : list)
+			{
+				stmt.addBatch(sql);
+			}
+			stmt.executeBatch();
+		}catch(SQLException ex)
+		{
+			ex.printStackTrace();
+			logger.error("Could not connectect to database");
+		}
+		
+	}
+
+	/*
+	 * Get the list of registry variables used in ifarm 
+	 */
+	public Map<String, String> getNifiVariableList() throws SQLException
+	{
+		DBUtils utils = new DBUtils();
+		utils.getConnection();
+		Connection conn = utils.connection;
+		
+		final String sql = "select * from NifiVariableList";
+		Statement stm =  conn.createStatement();
+		ResultSet rs = stm.executeQuery(sql);
+		Map<String, String> map = new HashMap<>();
+		while(rs.next())
+		{
+			map.put(rs.getString(1), rs.getString(2));
+		}
+		
+		return map;
+	}
+
+
 /*	public static void main(String[] args) {
 		DBUtils utils = new DBUtils();
 	}*/

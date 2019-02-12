@@ -20,12 +20,19 @@ private String mysqlPort;
 @SerializedName("mysqlUsername")
 @Expose
 private String mysqlUsername;
+
 @SerializedName("mysqlPassword")
 @Expose
 private String mysqlPassword;
+
+@SerializedName("mysqlDriverLocation")
+@Expose
+private String mysqlDriverLocation;
+
 @SerializedName("solrHost")
 @Expose
 private String solrHost;
+
 @SerializedName("solrPort")
 @Expose
 private String solrPort;
@@ -77,6 +84,22 @@ private String ifarmPacksHost;
 @SerializedName("ifarmPacksPort")
 @Expose
 private String ifarmPacksPort;
+
+@SerializedName("nifiHost")
+@Expose
+private String nifiHost;
+
+@SerializedName("nifiPort")
+@Expose
+private String nifiPort;
+
+@SerializedName("nifiUsername")
+@Expose
+private String nifiUsername;
+
+@SerializedName("nifiPassword")
+@Expose
+private String nifiPassword;
 
 public String getHdfsNameNode() {
 return hdfsNameNode;
@@ -270,17 +293,59 @@ public void setIfarmPacksPort(String ifarmPacksPort) {
 this.ifarmPacksPort = ifarmPacksPort;
 }
 
+
+public String getMysqlDriverLocation() {
+	return mysqlDriverLocation;
+}
+
+public void setMysqlDriverLocation(String mysqlDriverLocation) {
+	this.mysqlDriverLocation = mysqlDriverLocation;
+}
+
+public String getNifiHost() {
+	return nifiHost;
+}
+
+public void setNifiHost(String nifiHost) {
+	this.nifiHost = nifiHost;
+}
+
+public String getNifiPort() {
+	return nifiPort;
+}
+
+public void setNifiPort(String nifiPort) {
+	this.nifiPort = nifiPort;
+}
+
+public String getNifiUsername() {
+	return nifiUsername;
+}
+
+public void setNifiUsername(String nifiUsername) {
+	this.nifiUsername = nifiUsername;
+}
+
+public String getNifiPassword() {
+	return nifiPassword;
+}
+
+public void setNifiPassword(String nifiPassword) {
+	this.nifiPassword = nifiPassword;
+}
+
 @Override
 public String toString() {
 	return "IfarmConfig [hdfsNameNode=" + hdfsNameNode + ", hadoopConfigLoc=" + hadoopConfigLoc + ", mysqlHost="
 			+ mysqlHost + ", mysqlPort=" + mysqlPort + ", mysqlUsername=" + mysqlUsername + ", mysqlPassword="
-			+ mysqlPassword + ", solrHost=" + solrHost + ", solrPort=" + solrPort + ", solrUsername=" + solrUsername
-			+ ", solrPassword=" + solrPassword + ", mongoHostName=" + mongoHostName + ", mongoPort=" + mongoPort
-			+ ", mongoUsername=" + mongoUsername + ", mongoPassword=" + mongoPassword + ", livyHost=" + livyHost
-			+ ", livyPort=" + livyPort + ", livyUsername=" + livyUsername + ", livyPassword=" + livyPassword
-			+ ", kafkaBrokerHost=" + kafkaBrokerHost + ", kafkaBrokerPort=" + kafkaBrokerPort + ", ifarmDataHost="
-			+ ifarmDataHost + ", ifarmDataPort=" + ifarmDataPort + ", ifarmPacksHost=" + ifarmPacksHost
-			+ ", ifarmPacksPort=" + ifarmPacksPort + "]";
+			+ mysqlPassword + ", mysqlDriverLocation=" + mysqlDriverLocation + ", solrHost=" + solrHost + ", solrPort="
+			+ solrPort + ", solrUsername=" + solrUsername + ", solrPassword=" + solrPassword + ", mongoHostName="
+			+ mongoHostName + ", mongoPort=" + mongoPort + ", mongoUsername=" + mongoUsername + ", mongoPassword="
+			+ mongoPassword + ", livyHost=" + livyHost + ", livyPort=" + livyPort + ", livyUsername=" + livyUsername
+			+ ", livyPassword=" + livyPassword + ", kafkaBrokerHost=" + kafkaBrokerHost + ", kafkaBrokerPort="
+			+ kafkaBrokerPort + ", ifarmDataHost=" + ifarmDataHost + ", ifarmDataPort=" + ifarmDataPort
+			+ ", ifarmPacksHost=" + ifarmPacksHost + ", ifarmPacksPort=" + ifarmPacksPort + ", nifiHost=" + nifiHost
+			+ ", nifiPort=" + nifiPort + ", nifiUsername=" + nifiUsername + ", nifiPassword=" + nifiPassword + "]";
 }
 
 }

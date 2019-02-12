@@ -1,5 +1,6 @@
 package com.b3ds.ifarm.installation.controllers;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,8 @@ import com.b3ds.ifarm.installation.models.Credentials;
 import com.b3ds.ifarm.installation.models.IfarmConfig;
 import com.b3ds.ifarm.installation.models.Response;
 import com.b3ds.ifarm.installation.models.ValidationResponse;
+import com.b3ds.ifarm.installation.nifi.Nifideploy;
+import com.github.hermannpencole.nifi.swagger.ApiException;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -231,4 +234,18 @@ public class MainController {
 		Response res = new Response(500, null, "Failed");
 		return gson.toJson(res);
 	}
+	
+	
+	@PostMapping("/deployNifi")
+	@ResponseBody
+	public String deployNifi() throws SQLException, ApiException, IOException
+	{		
+		IfarmConfig config = dbUtil.getIfarmConfig();
+		Nifideploy deploy = new Nifideploy(config.getNifiHost(), config.getNifiPort());
+		deploy.deployNifiTemplate("template.xml");
+		deploy.createNifiVariables();
+		deploy.updateIfarmRecieving("7f9d331d-e72b-155f-0e41-823c4fe2b490", config.getIfarmDataHost(), config.getIfarmDataPort());
+		return "Done";
+	}
+	
 }

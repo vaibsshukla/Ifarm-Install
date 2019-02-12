@@ -48,7 +48,7 @@ public class DBTest {
 		con.close();
 	}
 	
-	@Test
+//	@Test
 	public void uestgetCredentials() throws SQLException
 	{
 		String type = "Ambari";
@@ -79,5 +79,13 @@ public class DBTest {
 		DBUtils utils = new DBUtils();
 		//utils.emptyTable("configs");
 		System.out.println(utils.getIfarmConfig());
+	}
+	
+	@Test
+	public void testNifiConfig() throws SQLException
+	{
+		DBUtils utils = new DBUtils();
+		utils.insertNifiVariableTable();
+		utils.getNifiVariableList();
 	}
 }

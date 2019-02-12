@@ -1,0 +1,73 @@
+
+                            <form id="formAmbari" class="form-horizontal">
+                  
+                              <div class="form-group">
+                              <label for="hostname" class="control-label col-sm-2 col-sm-offset-1">Host:</label>
+                                <div class="col-sm-8">
+                                <input type="text" class="form-control" name="hostname" id="hostname" required><br>
+                                </div>
+                              </div>
+                              <div class="form-group"> 
+                              <label for="port" class="control-label col-sm-2 col-sm-offset-1">Port:</label>
+                                  <div class="col-sm-8">
+                                  <input type="text" class="form-control" name="port" id="port" required minlength="2" maxlength="5"><br>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                              <label for="clusterName" class="control-label col-sm-2 col-sm-offset-1">Cluster Name:</label>
+                                  <div class="col-sm-8">
+                                  <input type="text" class="form-control" name="clusterName" id="clusterName" required><br>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                              <label for="userName" class="control-label col-sm-2 col-sm-offset-1">Username:</label>
+                                  <div class="col-sm-8">
+                                    <input type="text" class="form-control" name="userName" id="userName" required><br>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                              <label for="password1" class="control-label col-sm-2 col-sm-offset-1">Password:</label>
+                                  <div class="col-sm-8">
+                                    <input type="password" class="form-control" name="password" id="password" required><br>
+                                  </div>
+                              </div>
+                              <div class="form-group">
+                                   <div class="col-sm-12 col-sm-offset-10">
+                                    <button id="save_ambari_button" type="submit" class="btn btn-primary btn-lg">Next</button>
+                                  </div>
+                              </div>
+                            </form>        
+<!--         <script>
+            
+            $(document).ready(function(){
+              $("formAmbari").submit(function(event){
+                var p=$("#port").val();
+                var w=$("#host1").val();
+                var re= "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$";
+                var regexp = new RegExp(re);
+                console.log(regexp.test(w));
+                $(".error").remove();
+                 event.preventDefault();
+                if(!$.isNumeric(p))
+                {
+                    $("#port").after('<span class="error">Enter integers only</span>');
+                }
+                else if(p<80||p>65335)
+                {
+                    $("#port").after('<span class="error">Invalid port</span>');
+                }
+                else if(!regexp.test(w))
+                {
+                    $("#host1").after('<span class="error">Invalid hostname</span>'); 
+                }  
+                else
+                {
+                    $(".error").remove();
+                    alert("valid!");
+                    return true;
+                }
+              });
+             });
+            
+        </script>
+ -->        

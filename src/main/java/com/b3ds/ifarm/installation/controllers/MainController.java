@@ -38,7 +38,7 @@ public class MainController {
 
 	private final Logger logger = LogManager.getLogger(Controller.class);
 	private  RedirectView rv;
-	private final DBUtils dbUtil = new DBUtils();
+	private DBUtils dbUtil = new DBUtils();
 	private AmbariUtil UTIL = new AmbariUtil();
 	
 	@RequestMapping("/")
@@ -179,27 +179,7 @@ public class MainController {
 			return gson.toJson(new Response(500, new IfarmConfig(), "Configuration Not set."));
 		}
 	}
-	
-	@PostMapping("/saveConfigs")
-	@ResponseBody
-	public String saveConfigs(@RequestBody Object obj)
-	{
-		Gson gson = new Gson();
-		IfarmConfig obj2 = gson.fromJson(gson.toJson(obj), IfarmConfig.class);
-		System.out.println(obj2);
-		int i = dbUtil.setIfarmConfig(obj2);
-		if(i == 1)
-		{
-			Response response = new Response(200, obj2, "Configuration updated Successfully.");
-			return gson.toJson(response);
-		}
-		else
-		{
-			Response response = new Response(500, new IfarmConfig(), "Internal error: Check your sqlite db is present.");
-			return gson.toJson(response);
-		}
-	}
-	
+		
 	@PostMapping("/deploymysqldb")
 	@ResponseBody
 	public String deployMysqlDB()

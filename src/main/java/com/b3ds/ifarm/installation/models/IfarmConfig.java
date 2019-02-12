@@ -81,6 +81,7 @@ private String ifarmDataPort;
 @SerializedName("ifarmPacksHost")
 @Expose
 private String ifarmPacksHost;
+
 @SerializedName("ifarmPacksPort")
 @Expose
 private String ifarmPacksPort;
@@ -100,6 +101,10 @@ private String nifiUsername;
 @SerializedName("nifiPassword")
 @Expose
 private String nifiPassword;
+
+@SerializedName("hdfsProxyUser")
+@Expose
+private String hdfsProxyUser;
 
 public String getHdfsNameNode() {
 return hdfsNameNode;
@@ -332,6 +337,15 @@ public String getNifiPassword() {
 
 public void setNifiPassword(String nifiPassword) {
 	this.nifiPassword = nifiPassword;
+}
+
+
+public String getHdfsProxyUser() {
+	return hdfsProxyUser;
+}
+
+public void setHdfsProxyUser(String hdfsProxyUser) {
+	this.hdfsProxyUser = hdfsProxyUser;
 }
 
 @Override

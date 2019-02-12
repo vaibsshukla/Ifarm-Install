@@ -104,7 +104,7 @@ public class DBUtils {
 				+ "ifarmDataPort varchar(100),	"
 				+ "ifarmPacksHost varchar(100), ifarmPacksPort varchar(100), mysqlDriverLocation varchar(100),"
 				+ "nifiHost varchar(100), nifiPort varchar(100), nifiUsername varchar(100),"
-				+ "nifiPassword varchar(100))";
+				+ "nifiPassword varchar(100), hdfsProxyUser varchar(100))";
 		try(Connection conn = this.connection;
 				Statement pstmt = conn.createStatement()){
 				pstmt.execute(sql);
@@ -126,36 +126,37 @@ public class DBUtils {
 			while(rs.next())
 			{
 				IfarmConfig config = new IfarmConfig();
-				config.setHdfsNameNode(rs.getString(1));
-				config.setHadoopConfigLoc(rs.getString(2));
-				config.setMysqlHost(rs.getString(3));
-				config.setMysqlPort(rs.getString(4));
-				config.setMysqlUsername(rs.getString(5));
-				config.setMysqlPassword(rs.getString(6));
-				config.setSolrHost(rs.getString(7));
-				config.setSolrPort(rs.getString(8));
-				config.setSolrUsername(rs.getString(9));
-				config.setSolrPassword(rs.getString(10));
-				config.setMongoHostName(rs.getString(11));
-				config.setMongoPort(rs.getString(12));
-				config.setMongoUsername(rs.getString(13));
-				config.setMongoPassword(rs.getString(14));
-				config.setLivyHost(rs.getString(15));
-				config.setLivyPort(rs.getString(16));
-				config.setLivyUsername(rs.getString(17));
-				config.setLivyPassword(rs.getString(18));
-				config.setKafkaBrokerHost(rs.getString(19));
-				config.setKafkaBrokerPort(rs.getString(20));
-				config.setIfarmDataHost(rs.getString(21));
-				config.setIfarmDataPort(rs.getString(22));
-				config.setIfarmPacksHost(rs.getString(23));
-				config.setIfarmPacksPort(rs.getString(24));
+				config.setHdfsNameNode(rs.getString("hdfsNameNode"));
+				config.setHadoopConfigLoc(rs.getString("hadoopConfigLoc"));
+				config.setMysqlHost(rs.getString("mysqlHost"));
+				config.setMysqlPort(rs.getString("mysqlPort"));
+				config.setMysqlUsername(rs.getString("mysqlUsername"));
+				config.setMysqlPassword(rs.getString("mysqlPassword"));
+				config.setSolrHost(rs.getString("solrHost"));
+				config.setSolrPort(rs.getString("solrPort"));
+				config.setSolrUsername(rs.getString("solrUsername"));
+				config.setSolrPassword(rs.getString("solrPassword"));
+				config.setMongoHostName(rs.getString("mongoHostName"));
+				config.setMongoPort(rs.getString("mongoPort"));
+				config.setMongoUsername(rs.getString("mongoUsername"));
+				config.setMongoPassword(rs.getString("mongoPassword"));
+				config.setLivyHost(rs.getString("livyHost"));
+				config.setLivyPort(rs.getString("livyPort"));
+				config.setLivyUsername(rs.getString("livyUsername"));
+				config.setLivyPassword(rs.getString("livyPassword"));
+				config.setKafkaBrokerHost(rs.getString("kafkaBrokerHost"));
+				config.setKafkaBrokerPort(rs.getString("kafkaBrokerPort"));
+				config.setIfarmDataHost(rs.getString("ifarmDataHost"));
+				config.setIfarmDataPort(rs.getString("ifarmDataPort"));
+				config.setIfarmPacksHost(rs.getString("ifarmPacksHost"));
+				config.setIfarmPacksPort(rs.getString("ifarmPacksPort"));
 				
-				config.setMysqlDriverLocation(rs.getString(25));
-				config.setNifiHost(rs.getString(26));
-				config.setNifiPort(rs.getString(27));
-				config.setNifiUsername(rs.getString(28));
-				config.setNifiPassword(rs.getString(29));
+				config.setMysqlDriverLocation(rs.getString("mysqlDriverLocation"));
+				config.setNifiHost(rs.getString("nifiHost"));
+				config.setNifiPort(rs.getString("nifiPort"));
+				config.setNifiUsername(rs.getString("nifiUsername"));
+				config.setNifiPassword(rs.getString("nifiPassword"));
+				config.setHdfsProxyUser(rs.getString("hdfsProxyUser"));
 				return config;
 			}
 		}catch(SQLException ex){
@@ -187,8 +188,8 @@ public class DBUtils {
 		emptyTable("configs");
 		setIfarmConfigTable();
 		getConnection();
-		final String sql = "insert into configs(hdfsNameNode, hadoopConfigLoc, mysqlHost ,mysqlPort ,	mysqlUsername ,	mysqlPassword ,	solrHost ,	solrPort ,	solrUsername ,	solrPassword ,	mongoHostName ,	mongoPort ,	mongoUsername ,	mongoPassword , livyHost ,	livyPort ,	livyUsername ,	livyPassword ,	kafkaBrokerHost ,	kafkaBrokerPort ,	ifarmDataHost ,	ifarmDataPort ,	ifarmPacksHost , ifarmPacksPort,  mysqlDriverLocation, nifiHost, nifiPort, nifiUsername, nifiPassword)"
-				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+		final String sql = "insert into configs(hdfsNameNode, hadoopConfigLoc, mysqlHost ,mysqlPort ,	mysqlUsername ,	mysqlPassword ,	solrHost ,	solrPort ,	solrUsername ,	solrPassword ,	mongoHostName ,	mongoPort ,	mongoUsername ,	mongoPassword , livyHost ,	livyPort ,	livyUsername ,	livyPassword ,	kafkaBrokerHost ,	kafkaBrokerPort ,	ifarmDataHost ,	ifarmDataPort ,	ifarmPacksHost , ifarmPacksPort,  mysqlDriverLocation, nifiHost, nifiPort, nifiUsername, nifiPassword, hdfsProxyUser)"
+				+ "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 		int status = 0;
 		try(Connection conn = this.connection;
 			PreparedStatement pstmt = conn.prepareStatement(sql)){
@@ -222,6 +223,7 @@ public class DBUtils {
 			pstmt.setString(27, config.getNifiPort());
 			pstmt.setString(28, config.getNifiUsername());
 			pstmt.setString(29, config.getNifiPassword());
+			pstmt.setString(30, config.getHdfsProxyUser());
 			status = pstmt.executeUpdate();
 			return status;
 		}catch(SQLException ex){

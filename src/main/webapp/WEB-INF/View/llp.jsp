@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>MySQL Redirection</title>
 </head>
 <body>
-
+<p>MySQL Schema loaded</p>
 </body>
 </html>

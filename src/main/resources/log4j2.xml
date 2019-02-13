@@ -1,46 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration xmlns="http://logging.apache.org/log4j/2.0/config" status="INFO" strict="true" advertiser="multicastdns">
+<Configuration status="warn" packages="org.b3ds.ifarm.installation.log4j2" strict="true">
 
-<Appenders>
-	<Appender name="STDOUT" type="Console">
-      <Layout type="PatternLayout" pattern="%d{HH:mm:ss} %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green, DEBUG=blue} %msg%n"/>
-	</Appender>
-	
-	<Appender type="Console" name="FLOW">
-      <Layout type="PatternLayout" pattern="%highlight{%-5level}{DEBUG=blue} - [%logger{36}] - %highlight{%msg%n}{DEBUG=RED}"/>
-    </Appender>
-
-    <File name="MyFile" fileName="../logs/restkafka.log">
-      <PatternLayout>
-        <Pattern>%d{HH:mm:ss.SSS} [%logger{36}] - %msg%n</Pattern>
-      </PatternLayout>
-    </File>
-	
-<!-- 	<Socket name="WebAppender" host="192.168.1.16" port="8000" ignoreExceptions="false"  protocol="TCP" advertiseURI="/hello" advertise="true">
-	</Socket> -->
-</Appenders>
-
-  <Loggers>
-    <Logger name="com.b3ds.ifarm.installation" level="INFO" additivity="false">
-    	<AppenderRef ref="STDOUT"/>
-    </Logger>  
-    <Logger name="org.springframework.jdbc.datasource.init" level="TRACE" additivity="false">
-    	<AppenderRef ref="STDOUT"/>
-    </Logger>  
+ <!-- <Appenders>
+        <MyCustomAppender name="CustomWebSocketAppender" >
+       		<PatternLayout pattern=" Date: %d | level:%level | class name:%logger | method name:%M() | line number:%L | Location: %l | message:%m%n" />
+        </MyCustomAppender>
+    </Appenders>
+    -->   
+    <Appenders>
+        <CustomAppender name="CustomWebSocketAppender" >
+       		<PatternLayout pattern=" %d:%logger:%m%n" />
+        </CustomAppender>
+    </Appenders>
     
-    <Logger name="com.b3ds.ifarm.installation.configs" level="INFO" additivity="false">
-    	<AppenderRef ref="STDOUT"/>
-    </Logger>  
-<!--      <Logger name="org.springframework.web" level="INFO" additivity="false">
-    	<AppenderRef ref="WebAppender"/>
-    </Logger>   -->
-
-     <Logger name="org.springframework.web" level="OFF" additivity="false">
-    	<AppenderRef ref="FLOW"/>
-    </Logger>  
-    
-    <Root level="INFO">
-      <AppenderRef ref="FLOW"/>
-    </Root> 	
-  </Loggers>
+       <Loggers>
+       		<Logger name="org.springframework" level="INFO">
+       			<AppenderRef ref="CustomWebSocketAppender" />
+       		</Logger>
+              <Root level="DEBUG" additivity="false">
+                     <AppenderRef ref="CustomWebSocketAppender" />
+              </Root>
+       </Loggers>
 </Configuration>

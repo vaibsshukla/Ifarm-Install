@@ -46,4 +46,5 @@ public class MVCContext extends WebMvcConfigurerAdapter{
         super.addResourceHandlers(registry);
     }
         	
+    
 }

@@ -14,7 +14,7 @@ public class InitializeDb {
 	{	 
 		String projectLoc=System.getProperty("user.dir");
 		System.out.println(projectLoc);
-		String url = "jdbc:sqlite:"+projectLoc+"\\src\\main\\resources\\sqlite.db";
+		String url = "jdbc:sqlite:"+projectLoc+"\\src\\main\\resources\\"+fileName;
 	
 		
 		Connection con = DriverManager.getConnection(url);

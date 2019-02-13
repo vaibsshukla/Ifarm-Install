@@ -30,12 +30,12 @@ public class Log4jWebSession
         session.send("/app/logs", jsonString.getBytes()).getReceiptId();		
 	}
 	
-	public void connects() throws InterruptedException, ExecutionException
+	public void connects(String host,String port) throws InterruptedException, ExecutionException
 	   {
 		   WebSocketClient transport = new StandardWebSocketClient();
 		   WebSocketStompClient stompClient = new WebSocketStompClient(transport);
 		   stompClient.setMessageConverter(new StringMessageConverter());
-	        String url = "ws://localhost:8081/gs-guide-websocket";
+	        String url = "ws://"+host+":"+port+"/gs-guide-websocket";
 	        StompSessionHandler handler = new stompHandler();
 	        ListenableFuture<StompSession> f = stompClient.connect(url,handler);
 	        session = f.get();       

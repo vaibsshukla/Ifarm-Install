@@ -8,7 +8,7 @@
     </Appenders>
     -->   
     <Appenders>
-        <CustomAppender name="CustomWebSocketAppender" >
+        <CustomAppender name="CustomWebSocketAppender" host="localhost" port="8081">
        		<PatternLayout pattern=" %d:%logger:%m%n" />
         </CustomAppender>
     </Appenders>

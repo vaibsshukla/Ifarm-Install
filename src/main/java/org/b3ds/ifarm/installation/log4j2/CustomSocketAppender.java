@@ -26,17 +26,21 @@ import com.b3ds.ifarm.installation.wssocket.Log4jWebSession;;
 
 public class CustomSocketAppender extends AbstractAppender {
 
-    private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
+	
+	private final ReadWriteLock rwLock = new ReentrantReadWriteLock();
     private final Lock readLock = rwLock.readLock();
     
     Log4jWebSession app = null;
-    protected CustomSocketAppender(String name, Filter filter,
+
+    protected CustomSocketAppender(String name, String host,String port,Filter filter,
             Layout<? extends Serializable> layout, final boolean ignoreExceptions) {
-    	
         super(name, filter, layout, ignoreExceptions);
+        System.out.println(host);
+        System.out.println(port);
+        
     	app=new Log4jWebSession();
         try {
-			app.connects();
+			app.connects(host,port);
 		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
@@ -46,6 +50,8 @@ public class CustomSocketAppender extends AbstractAppender {
     @PluginFactory
     public static CustomSocketAppender createAppender(
             @PluginAttribute("name") String name,
+            @PluginAttribute("host") String host,
+            @PluginAttribute("port") String port,
             @PluginElement("Layout") Layout<? extends Serializable> layout,
             @PluginElement("Filter") final Filter filter,
             @PluginAttribute("otherAttribute") String otherAttribute) {
@@ -56,7 +62,7 @@ public class CustomSocketAppender extends AbstractAppender {
         if (layout == null) {
             layout = PatternLayout.createDefaultLayout();
         }
-        return new CustomSocketAppender(name, filter, layout, true);
+        return new CustomSocketAppender(name, host, port, filter, layout, true);
 }
     
        @Override
